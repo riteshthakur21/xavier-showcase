@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
     <title>Xavier AlumniConnect | next‑gen alumni platform</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Tailwind (custom config) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,9 +18,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
                         brand: { 50: '#eff6ff', 100: '#dbeafe', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' }
                     },
@@ -25,6 +26,10 @@
                         'gradient-xy': 'gradient-xy 15s ease infinite',
                         'float': 'float 6s ease-in-out infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'reveal': 'reveal 0.7s cubic-bezier(0.16,1,0.3,1) forwards',
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards',
+                        'toast-in': 'toastIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards',
+                        'toast-out': 'toastOut 0.3s ease-in forwards',
                     },
                     keyframes: {
                         'gradient-xy': {
@@ -34,7 +39,23 @@
                         'float': {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
-                        }
+                        },
+                        'reveal': {
+                            from: { opacity: '0', transform: 'translateY(36px) scale(0.97)' },
+                            to: { opacity: '1', transform: 'translateY(0) scale(1)' },
+                        },
+                        'slideUp': {
+                            from: { opacity: '0', transform: 'translateY(24px)' },
+                            to: { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'toastIn': {
+                            from: { opacity: '0', transform: 'translateX(100%) scale(0.9)' },
+                            to: { opacity: '1', transform: 'translateX(0) scale(1)' },
+                        },
+                        'toastOut': {
+                            from: { opacity: '1', transform: 'translateX(0) scale(1)' },
+                            to: { opacity: '0', transform: 'translateX(100%) scale(0.9)' },
+                        },
                     }
                 }
             }
@@ -42,34 +63,242 @@
     </script>
 
     <!-- Font Awesome & Animate.css -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <style>
-        /* custom blobs + effects */
-        .blob-bg { position: absolute; filter: blur(100px); z-index: -1; opacity: 0.4; animation: pulse-blob 12s infinite alternate; }
-        @keyframes pulse-blob { 0% { transform: scale(1) translate(0, 0); } 100% { transform: scale(1.2) translate(30px, -30px); } }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+        /* ─── blobs ─────────────────────────────────────────────────────────── */
+        .blob-bg {
+            position: absolute;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: pulse-blob 12s infinite alternate;
+        }
 
-        .menu-open { animation: slideDown 0.3s ease-out forwards; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-blob {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
 
-        /* gradient border animation for cards */
+            100% {
+                transform: scale(1.2) translate(30px, -30px);
+            }
+        }
+
+        /* ─── scrollbar ─────────────────────────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #60a5fa;
+        }
+
+        /* ─── scroll progress bar ───────────────────────────────────────────── */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899);
+            z-index: 9999;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.8);
+        }
+
+        /* ─── navbar shrink on scroll ───────────────────────────────────────── */
+        nav.shrunk {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        nav.shrunk .nav-logo-icon {
+            transform: scale(0.9);
+        }
+
+        /* ─── active nav link ───────────────────────────────────────────────── */
+        .nav-link.active {
+            color: #fff;
+        }
+
+        .nav-link.active::after {
+            width: 100% !important;
+        }
+
+        /* ─── hamburger → X morphing ─────────────────────────────────────────── */
+        .hamburger-bar {
+            display: block;
+            width: 22px;
+            height: 2px;
+            border-radius: 99px;
+            background: currentColor;
+            transform-origin: center;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.3s ease,
+                background 0.3s ease,
+                width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* bar 1: slide down + rotate */
+        #mobile-menu-btn.is-open .hamburger-bar:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+            background: #3b82f6;
+        }
+
+        /* bar 2: shrink and fade */
+        #mobile-menu-btn.is-open .hamburger-bar:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        /* bar 3: slide up + rotate */
+        #mobile-menu-btn.is-open .hamburger-bar:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+            background: #3b82f6;
+        }
+
+        /* ─── mobile menu container ──────────────────────────────────────────── */
+        #mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        #mobile-menu.open {
+            max-height: 700px;
+            opacity: 1;
+        }
+
+        /* ─── per-item slide-in stagger ──────────────────────────────────────── */
+        #menu-inner>.menu-item {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* reset delays instantly on close so items vanish together */
+        #mobile-menu:not(.open) #menu-inner>.menu-item {
+            transition-delay: 0s !important;
+        }
+
+        /* open: revealed + staggered delays */
+        #mobile-menu.open #menu-inner>.menu-item {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(1) {
+            transition-delay: 0.04s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(2) {
+            transition-delay: 0.09s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(3) {
+            transition-delay: 0.14s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(4) {
+            transition-delay: 0.19s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(5) {
+            transition-delay: 0.24s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(6) {
+            transition-delay: 0.28s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(7) {
+            transition-delay: 0.32s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(8) {
+            transition-delay: 0.36s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(9) {
+            transition-delay: 0.40s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(10) {
+            transition-delay: 0.44s;
+        }
+
+        #mobile-menu.open #menu-inner>.menu-item:nth-child(11) {
+            transition-delay: 0.48s;
+        }
+
+        /* ─── mobile link press effect ───────────────────────────────────────── */
+        .mobile-link {
+            transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+        }
+
+        .mobile-link:active {
+            transform: scale(0.97);
+        }
+
+        /* ─── backdrop overlay ───────────────────────────────────────────────── */
+        #menu-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 49;
+            background: rgba(2, 6, 23, 0.72);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        #menu-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* ─── menu top glow line ─────────────────────────────────────────────── */
+        #menu-inner {
+            position: relative;
+        }
+
+        #menu-inner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 16px;
+            right: 16px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #3b82f6 40%, #a855f7 60%, transparent);
+            opacity: 0.5;
+        }
+
+        /* ─── gradient border animation for cards ───────────────────────────── */
         .card-gradient-border {
             position: relative;
             border: solid 2px transparent;
             background-clip: padding-box;
         }
+
         .card-gradient-border::before {
             content: '';
             position: absolute;
-            top: 0; right: 0; left: 0; bottom: 0;
+            inset: -2px;
             z-index: -1;
-            margin: -2px;
             border-radius: inherit;
             background: linear-gradient(120deg, #3b82f6, #a855f7, #3b82f6);
             background-size: 300% 300%;
@@ -77,213 +306,685 @@
             opacity: 0;
             transition: opacity 0.4s;
         }
-        .card-gradient-border:hover::before { opacity: 1; }
 
-        /* terminal copy tooltip */
-        .copy-tooltip { position: relative; }
-        .copy-tooltip .tooltip-text {
-            visibility: hidden; width: 120px; background: #1e293b; color: #fff; text-align: center; border-radius: 6px; padding: 6px 0; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -60px; opacity: 0; transition: opacity 0.3s; font-size: 12px; border: 1px solid #334155;
+        .card-gradient-border:hover::before {
+            opacity: 1;
         }
-        .copy-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-        /* stats card float */
-        .stat-card-float { animation: float 6s ease-in-out infinite; animation-delay: calc(var(--delay) * 1s); }
+        /* ─── 3-D card tilt ─────────────────────────────────────────────────── */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.12s ease-out, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+
+        .tilt-card:hover {
+            box-shadow: 0 24px 60px rgba(59, 130, 246, 0.18);
+        }
+
+        /* ─── stat card float ───────────────────────────────────────────────── */
+        .stat-card-float {
+            animation: float 6s ease-in-out infinite;
+            animation-delay: calc(var(--delay) * 1s);
+        }
+
+        /* ─── scroll-reveal hidden state ────────────────────────────────────── */
+        .sr-hidden {
+            opacity: 0;
+            transform: translateY(36px) scale(0.97);
+        }
+
+        .sr-visible {
+            animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* ─── toast ─────────────────────────────────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            color: #f8fafc;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 197, 94, 0.25);
+            pointer-events: none;
+        }
+
+        .toast .toast-icon {
+            color: #22c55e;
+            font-size: 16px;
+        }
+
+        /* ─── back-to-top ───────────────────────────────────────────────────── */
+        #back-to-top {
+            position: fixed;
+            bottom: 28px;
+            left: 28px;
+            z-index: 9998;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #a855f7);
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            transition: opacity 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
+            pointer-events: none;
+        }
+
+        #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+
+        #back-to-top:hover {
+            box-shadow: 0 0 28px rgba(59, 130, 246, 0.9);
+            transform: scale(1.12);
+        }
+
+        /* ─── ripple ────────────────────────────────────────────────────────── */
+        .ripple-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple-btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            animation: ripple-spread 0.6s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-spread {
+            to {
+                width: 400px;
+                height: 400px;
+                opacity: 0;
+            }
+        }
+
+        /* ─── typing cursor ─────────────────────────────────────────────────── */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+            color: #3b82f6;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* ─── terminal pulse line ───────────────────────────────────────────── */
+        .term-pulse {
+            animation: termPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes termPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* ─── copy button icon smooth swap ─────────────────────────────────── */
+        .copy-btn {
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .copy-btn.copied {
+            color: #22c55e;
+            transform: scale(1.2);
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-300 font-sans antialiased overflow-x-hidden selection:bg-brand-500 selection:text-white">
 
-    <!-- enhanced glowing backgrounds -->
+<body
+    class="bg-slate-950 text-slate-300 font-sans antialiased overflow-x-hidden selection:bg-brand-500 selection:text-white">
+
+    <!-- Scroll progress bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Back-to-top button -->
+    <button id="back-to-top" aria-label="Back to top" title="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Background blobs -->
     <div class="blob-bg w-72 h-72 md:w-96 md:h-96 bg-brand-600 rounded-full top-0 left-0 mix-blend-screen"></div>
-    <div class="blob-bg w-72 h-72 md:w-96 md:h-96 bg-purple-600 rounded-full bottom-0 right-0 mix-blend-screen animation-delay-2000"></div>
-    <div class="blob-bg w-48 h-48 bg-pink-600 rounded-full top-1/2 left-1/3 mix-blend-screen opacity-30 hidden md:block"></div>
+    <div class="blob-bg w-72 h-72 md:w-96 md:h-96 bg-purple-600 rounded-full bottom-0 right-0 mix-blend-screen"></div>
+    <div
+        class="blob-bg w-48 h-48 bg-pink-600 rounded-full top-1/2 left-1/3 mix-blend-screen opacity-30 hidden md:block">
+    </div>
 
-    <!-- Navigation (glassmorphism + micro interactions) -->
-    <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800 transition-all duration-300">
+    <!-- ── Navigation ─────────────────────────────────────────────────────── -->
+    <nav id="navbar"
+        class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo with hover pulse -->
+            <div class="flex justify-between items-center h-20 transition-all duration-300" id="nav-inner">
+                <!-- Logo -->
                 <div class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 group-hover:scale-110 transition-transform duration-300">
+                    <div
+                        class="nav-logo-icon w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-graduation-cap text-xl"></i>
                     </div>
-                    <span class="text-lg md:text-xl font-bold text-white tracking-tight">Xavier Alumni<span class="text-brand-400">Connect</span></span>
+                    <span class="text-lg md:text-xl font-bold text-white tracking-tight">Xavier Alumni<span
+                            class="text-brand-400">Connect</span></span>
                 </div>
 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#features" class="text-sm font-medium text-slate-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-400 after:transition-all after:duration-300 hover:after:w-full">Features</a>
-                    <a href="#architecture" class="text-sm font-medium text-slate-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-400 after:transition-all after:duration-300 hover:after:w-full">Architecture</a>
-                    <a href="#setup" class="text-sm font-medium text-slate-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-400 after:transition-all after:duration-300 hover:after:w-full">Setup Docs</a>
+                <div class="hidden md:flex items-center space-x-6">
 
-                    <div class="flex items-center gap-4 border-l border-slate-700 pl-8">
-                        <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank" class="text-slate-400 hover:text-white transition-all hover:scale-110 text-xl">
+                    <!-- Features Dropdown -->
+                    <div class="relative group/dd">
+                        <button
+                            class="nav-link flex items-center gap-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors pb-0.5 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-400 after:transition-all after:duration-300 group-hover/dd:after:w-full">
+                            Features <i
+                                class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 group-hover/dd:rotate-180"></i>
+                        </button>
+                        <!-- Dropdown panel -->
+                        <div
+                            class="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-52 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/60 opacity-0 invisible group-hover/dd:opacity-100 group-hover/dd:visible group-hover/dd:translate-y-0 translate-y-2 transition-all duration-200 z-50 overflow-hidden">
+                            <!-- arrow pointer -->
+                            <div
+                                class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-slate-900 border-l border-t border-slate-800">
+                            </div>
+                            <div class="p-2 relative">
+                                <a href="#features"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                                    <span
+                                        class="w-7 h-7 rounded-lg bg-brand-500/10 flex items-center justify-center shrink-0"><i
+                                            class="fas fa-star text-brand-400 text-xs"></i></span>
+                                    Core Features
+                                </a>
+                                <a href="#networking"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                                    <span
+                                        class="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><i
+                                            class="fas fa-user-plus text-emerald-400 text-xs"></i></span>
+                                    Networking
+                                </a>
+                                <a href="#platform"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                                    <span
+                                        class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"><i
+                                            class="fas fa-th-large text-purple-400 text-xs"></i></span>
+                                    Platform
+                                </a>
+                                <a href="#user-dashboard"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                                    <span
+                                        class="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0"><i
+                                            class="fas fa-columns text-blue-400 text-xs"></i></span>
+                                    Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#architecture" data-section="architecture"
+                        class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-400 after:transition-all after:duration-300 hover:after:w-full">Tech
+                        Stack</a>
+                    <a href="#setup" data-section="setup"
+                        class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-400 after:transition-all after:duration-300 hover:after:w-full">Setup</a>
+
+                    <div class="flex items-center gap-4 border-l border-slate-700 pl-6">
+                        <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank"
+                            class="text-slate-400 hover:text-white transition-all hover:scale-110 text-xl">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="https://xavier-alumni-connect.vercel.app" target="_blank" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-brand-500 to-purple-600 text-white font-bold text-sm hover:shadow-[0_0_30px_rgba(59,130,246,0.7)] transition-all flex items-center gap-2 group shadow-lg">
+                        <a href="https://xavier-alumni-connect.vercel.app" target="_blank"
+                            class="ripple-btn px-5 py-2.5 rounded-full bg-gradient-to-r from-brand-500 to-purple-600 text-white font-bold text-sm hover:shadow-[0_0_30px_rgba(59,130,246,0.7)] transition-all flex items-center gap-2 group shadow-lg">
                             Launch App <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </a>
                     </div>
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-slate-300 hover:text-white focus:outline-none p-2">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
+                <button id="mobile-menu-btn"
+                    class="md:hidden relative z-50 flex flex-col justify-center items-center gap-[5px] w-10 h-10 text-slate-300 hover:text-white focus:outline-none transition-all active:scale-90"
+                    aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                </button>
             </div>
         </div>
 
-        <!-- Mobile Menu Dropdown (improved) -->
-        <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 shadow-2xl menu-open">
-            <div class="px-4 py-6 flex flex-col space-y-4">
-                <a href="#features" class="mobile-link text-base font-medium text-slate-300 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition">Features</a>
-                <a href="#architecture" class="mobile-link text-base font-medium text-slate-300 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition">Architecture</a>
-                <a href="#setup" class="mobile-link text-base font-medium text-slate-300 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition">Setup Docs</a>
-                <hr class="border-slate-800 my-2">
-                <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank" class="text-base font-medium text-slate-300 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 flex items-center gap-2">
-                    <i class="fab fa-github"></i> GitHub Repo
+        <!-- Mobile Menu (height-transition based) -->
+        <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+            <div id="menu-inner"
+                class="px-4 py-6 flex flex-col space-y-1 bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 shadow-2xl">
+
+                <!-- Features group label -->
+                <p class="menu-item px-3 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-600">
+                    Features</p>
+                <a href="#features"
+                    class="menu-item mobile-link text-base font-medium text-slate-300 hover:text-white p-3 rounded-lg hover:bg-slate-800/80 flex items-center gap-3">
+                    <i class="fas fa-star w-5 text-brand-400 text-sm"></i> Core Features
                 </a>
-                <a href="https://xavier-alumni-connect.vercel.app" target="_blank" class="mt-4 text-center px-5 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-bold text-base hover:scale-[1.02] transition-all shadow-lg shadow-brand-600/20">
-                    Launch App 🚀
+                <a href="#networking"
+                    class="menu-item mobile-link text-base font-medium text-slate-300 hover:text-white p-3 rounded-lg hover:bg-slate-800/80 flex items-center gap-3">
+                    <i class="fas fa-user-plus w-5 text-emerald-400 text-sm"></i> Networking
+                </a>
+                <a href="#platform"
+                    class="menu-item mobile-link text-base font-medium text-slate-300 hover:text-white p-3 rounded-lg hover:bg-slate-800/80 flex items-center gap-3">
+                    <i class="fas fa-th-large w-5 text-purple-400 text-sm"></i> Platform
+                </a>
+                <a href="#user-dashboard"
+                    class="menu-item mobile-link text-base font-medium text-slate-300 hover:text-white p-3 rounded-lg hover:bg-slate-800/80 flex items-center gap-3">
+                    <i class="fas fa-columns w-5 text-blue-400 text-sm"></i> Dashboard
+                </a>
+
+                <hr class="menu-item border-slate-800 !my-3">
+
+                <a href="#architecture"
+                    class="menu-item mobile-link text-base font-medium text-slate-300 hover:text-white p-3 rounded-lg hover:bg-slate-800/80 flex items-center gap-3">
+                    <i class="fas fa-layer-group w-5 text-purple-400 text-sm"></i> Tech Stack
+                </a>
+                <a href="#setup"
+                    class="menu-item mobile-link text-base font-medium text-slate-300 hover:text-white p-3 rounded-lg hover:bg-slate-800/80 flex items-center gap-3">
+                    <i class="fas fa-terminal w-5 text-green-400 text-sm"></i> Setup Docs
+                </a>
+
+                <hr class="menu-item border-slate-800 !my-3">
+
+                <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank"
+                    class="menu-item text-base font-medium text-slate-300 hover:text-white p-3 rounded-lg hover:bg-slate-800/80 flex items-center gap-3 transition-all">
+                    <i class="fab fa-github w-5 text-sm"></i> GitHub Repo
+                </a>
+                <a href="https://xavier-alumni-connect.vercel.app" target="_blank"
+                    class="menu-item ripple-btn mt-1 text-center px-5 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-bold text-base hover:scale-[1.02] transition-all shadow-lg shadow-brand-600/20 flex items-center justify-center gap-2">
+                    <i class="fas fa-rocket"></i> Launch App
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section (ultra pro max) -->
-    <section class="relative pt-32 pb-16 md:pt-48 md:pb-32 overflow-hidden px-4">
+    <!-- Backdrop overlay (closes menu on tap-outside) -->
+    <div id="menu-overlay" aria-hidden="true"></div>
+
+    <!-- ── Hero Section ─────────────────────────────────────────────────────── -->
+    <section id="hero" class="relative pt-32 pb-16 md:pt-48 md:pb-32 overflow-hidden px-4">
         <div class="max-w-7xl mx-auto relative z-10 text-center">
 
-            <!-- Live Status Badge with ping + glow -->
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs md:text-sm font-medium mb-8 animate__animated animate__fadeInDown shadow-[0_0_25px_rgba(34,197,94,0.4)] backdrop-blur-sm">
+            <!-- Live Status Badge -->
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs md:text-sm font-medium mb-8 animate__animated animate__fadeInDown shadow-[0_0_25px_rgba(34,197,94,0.4)] backdrop-blur-sm">
                 <span class="relative flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                 </span>
                 System Live · Production Ready
             </div>
 
-            <h1 class="text-4xl md:text-6xl lg:text-8xl font-extrabold text-white tracking-tight mb-6 animate__animated animate__fadeInUp leading-tight [text-shadow:_0_0_30px_rgb(59_130_246_/_50%)]">
+            <h1
+                class="text-4xl md:text-6xl lg:text-8xl font-extrabold text-white tracking-tight mb-6 animate__animated animate__fadeInUp leading-tight [text-shadow:_0_0_30px_rgb(59_130_246_/_50%)]">
                 The Next-Gen <br class="hidden md:block">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-brand-500 to-purple-500 animate-gradient-xy bg-[length:300%_300%]">
+                <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-brand-500 to-purple-500 animate-gradient-xy bg-[length:300%_300%]">
                     Alumni Platform
                 </span>
             </h1>
 
-            <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-slate-400 mb-10 animate__animated animate__fadeInUp animate__delay-1s px-2">
-                A highly secure, full‑stack web application for managing alumni relationships, job boards, and community events with an automated admin verification workflow.
+            <p
+                class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-slate-400 mb-10 animate__animated animate__fadeInUp animate__delay-1s px-2">
+                A highly secure, full‑stack web application for managing alumni relationships, job boards, and community
+                events with an automated admin verification workflow.
             </p>
 
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 animate__animated animate__fadeInUp animate__delay-1s w-full px-4 md:px-0">
-                <a href="https://xavier-alumni-connect.vercel.app" target="_blank" class="group w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-bold text-lg hover:shadow-[0_0_40px_rgba(59,130,246,0.7)] transition-all flex items-center justify-center gap-3 relative overflow-hidden">
-                    <span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+            <div
+                class="flex flex-col sm:flex-row justify-center items-center gap-4 animate__animated animate__fadeInUp animate__delay-1s w-full px-4 md:px-0">
+                <a href="https://xavier-alumni-connect.vercel.app" target="_blank"
+                    class="ripple-btn group w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 text-white font-bold text-lg hover:shadow-[0_0_40px_rgba(59,130,246,0.7)] transition-all flex items-center justify-center gap-3 relative overflow-hidden">
+                    <span
+                        class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
                     <i class="fas fa-rocket relative z-10"></i>
                     <span class="relative z-10">Visit Live App</span>
                 </a>
-                <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank" class="group w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800/80 text-white font-bold text-lg hover:bg-slate-700 transition-all border border-slate-700 flex items-center justify-center gap-3 backdrop-blur-sm">
+                <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank"
+                    class="ripple-btn group w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800/80 text-white font-bold text-lg hover:bg-slate-700 transition-all border border-slate-700 flex items-center justify-center gap-3 backdrop-blur-sm hover:border-brand-500/50">
                     <i class="fab fa-github group-hover:rotate-12 transition-transform"></i> Source Code
                 </a>
             </div>
         </div>
 
-        <!-- Dashboard Preview Mockup (floating animation) -->
-        <div class="mt-16 md:mt-20 max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 relative animate__animated animate__fadeInUp animate__delay-2s">
-            <div class="rounded-xl md:rounded-2xl border border-slate-800 bg-slate-900/50 backdrop-blur-sm shadow-2xl overflow-hidden hover:shadow-[0_0_60px_rgba(59,130,246,0.3)] transition-shadow duration-500">
+        <!-- Dashboard Preview Mockup -->
+        <div
+            class="mt-16 md:mt-20 max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 animate__animated animate__fadeInUp animate__delay-2s">
+            <div
+                class="rounded-xl md:rounded-2xl border border-slate-800 bg-slate-900/50 backdrop-blur-sm shadow-2xl overflow-hidden hover:shadow-[0_0_60px_rgba(59,130,246,0.3)] transition-shadow duration-500">
                 <div class="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-slate-950">
                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
                     <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    <div class="ml-2 md:ml-4 text-[10px] md:text-xs font-mono text-slate-500 truncate">xavier-alumni-connect.vercel.app/dashboard</div>
+                    <div class="ml-2 md:ml-4 text-[10px] md:text-xs font-mono text-slate-500 truncate">
+                        xavier-alumni-connect.vercel.app/dashboard</div>
                 </div>
                 <div class="p-6 md:p-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- stat cards with custom float delays -->
-                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-slate-500 transition-all duration-300 hover:scale-105 stat-card-float" style="--delay: 0">
-                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">Verified Alumni</div>
-                        <div class="text-4xl md:text-5xl font-extrabold text-white tracking-tight">69</div>
+                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-slate-500 transition-all duration-300 hover:scale-105 stat-card-float"
+                        style="--delay:0">
+                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">
+                            Verified Alumni</div>
+                        <div class="text-4xl md:text-5xl font-extrabold text-white tracking-tight counter"
+                            data-target="69">0</div>
                     </div>
-                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:scale-105 stat-card-float" style="--delay: 0.5">
-                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">Active Jobs</div>
-                        <div class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight">4</div>
+                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:scale-105 stat-card-float"
+                        style="--delay:0.5">
+                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">
+                            Active Jobs</div>
+                        <div class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight counter"
+                            data-target="4">0</div>
                     </div>
-                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:scale-105 stat-card-float" style="--delay: 1">
-                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">Active Events</div>
-                        <div class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight">2</div>
+                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:scale-105 stat-card-float"
+                        style="--delay:1">
+                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">
+                            Active Events</div>
+                        <div class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight counter"
+                            data-target="2">0</div>
                     </div>
-                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-yellow-500/50 transition-all duration-300 hover:scale-105 stat-card-float" style="--delay: 1.5">
-                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">Pending Approvals</div>
-                        <div class="text-4xl md:text-5xl font-extrabold text-yellow-500 tracking-tight">6</div>
+                    <div class="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:border-yellow-500/50 transition-all duration-300 hover:scale-105 stat-card-float"
+                        style="--delay:1.5">
+                        <div class="text-xs md:text-sm text-slate-400 mb-2 font-semibold uppercase tracking-widest">
+                            Pending Approvals</div>
+                        <div class="text-4xl md:text-5xl font-extrabold text-yellow-500 tracking-tight counter"
+                            data-target="6">0</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section (already ultra) -->
+    <!-- ── Features Section ───────────────────────────────────────────────── -->
     <section id="features" class="py-20 md:py-24 bg-slate-950 relative border-t border-slate-900 px-4">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-12 md:mb-16">
-                <h2 class="text-brand-500 font-semibold tracking-wide uppercase text-xs md:text-sm mb-2 animate__animated animate__fadeInDown">Capabilities</h2>
-                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4 animate__animated animate__fadeInUp">Everything you need.</h3>
-                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base animate__animated animate__fadeInUp">Built from the ground up for performance, security, and user experience.</p>
+            <div class="text-center mb-12 md:mb-16 sr-hidden">
+                <h2 class="text-brand-500 font-semibold tracking-wide uppercase text-xs md:text-sm mb-2">Capabilities
+                </h2>
+                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4">Everything you need.</h3>
+                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">Built from the ground up for
+                    performance, security, and user experience.</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                <!-- Feature 1 -->
-                <div class="p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-brand-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-brand-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
                         <i class="fas fa-user-shield text-xl md:text-2xl text-brand-400"></i>
                     </div>
                     <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Strict Verification</h4>
-                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Admin panel ensures only legitimate graduates can access the portal. Features a robust Approve/Reject workflow.</p>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Admin panel ensures only legitimate
+                        graduates can access the portal. Features a robust Approve/Reject workflow.</p>
                 </div>
-                <!-- Feature 2 -->
-                <div class="p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-purple-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-purple-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
                         <i class="fas fa-envelope-open-text text-xl md:text-2xl text-purple-400"></i>
                     </div>
                     <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Smart Email Alerts</h4>
-                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Integrated with Brevo API to send real-time transactional emails for account approvals and password resets.</p>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Integrated with Brevo API to send
+                        real-time transactional emails for account approvals and password resets.</p>
                 </div>
-                <!-- Feature 3 -->
-                <div class="p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border sm:col-span-2 lg:col-span-1">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border sm:col-span-2 lg:col-span-1">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
                         <i class="fas fa-briefcase text-xl md:text-2xl text-blue-400"></i>
                     </div>
                     <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Job & Event Board</h4>
-                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Alumni can post job openings and register college events. Students get direct access to exclusive college network opportunities.</p>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Alumni can post job openings and
+                        register college events. Students get direct access to exclusive college network opportunities.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Architecture / Tech Stack Section (CENTERED like capabilities) -->
+    <!-- ── Networking Features Section ───────────────────────────────────── -->
+    <section id="networking" class="py-20 md:py-24 bg-slate-900 relative border-t border-slate-800/50 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 md:mb-16 sr-hidden">
+                <h2 class="text-brand-500 font-semibold tracking-wide uppercase text-xs md:text-sm mb-2">Connect &amp;
+                    Grow</h2>
+                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4">Networking Features</h3>
+                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">Build meaningful professional
+                    connections with alumni from your college network.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Connection Request System -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-950 border border-slate-800 hover:border-brand-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-brand-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-user-plus text-xl md:text-2xl text-brand-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Connection Request System</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Send and accept connection requests to
+                        grow your professional alumni network. Manage pending, accepted, and rejected connections from
+                        your dashboard.</p>
+                </div>
+
+                <!-- Real-Time Chat System -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-comments text-xl md:text-2xl text-emerald-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Real-Time Chat System</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Connected alumni can instantly message
+                        each other with real-time delivery, powered by Socket.io for seamless live conversations.</p>
+                </div>
+
+                <!-- Professional Profiles -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-950 border border-slate-800 hover:border-purple-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border sm:col-span-2 lg:col-span-1">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-id-card text-xl md:text-2xl text-purple-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Professional Profiles</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Every alumni has a rich profile
+                        showcasing their graduation year, current company, and skills — making it easy to discover the
+                        right connections.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Platform Features Section ──────────────────────────────────────── -->
+    <section id="platform" class="py-20 md:py-24 bg-slate-950 relative border-t border-slate-900 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 md:mb-16 sr-hidden">
+                <h2 class="text-brand-500 font-semibold tracking-wide uppercase text-xs md:text-sm mb-2">Core Modules
+                </h2>
+                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4">Platform Features</h3>
+                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">Robust tools to keep your alumni
+                    community organized, verified, and engaged.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <!-- Admin Verification System -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-brand-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-user-shield text-xl md:text-2xl text-brand-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Admin Verification</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">An Approve/Reject workflow ensures only
+                        genuine graduates can access the platform, maintaining community integrity.</p>
+                </div>
+
+                <!-- Alumni Job Board -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-briefcase text-xl md:text-2xl text-blue-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Alumni Job Board</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Alumni can post and browse exclusive
+                        job listings, giving the entire network direct access to curated career opportunities.</p>
+                </div>
+
+                <!-- Event Management System -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-pink-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-pink-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-calendar-alt text-xl md:text-2xl text-pink-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Event Management</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Create, manage, and register for alumni
+                        reunions, career talks, and college events with a seamless event workflow.</p>
+                </div>
+
+                <!-- Notification System -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-900 border border-slate-800 hover:border-yellow-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-bell text-xl md:text-2xl text-yellow-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Notification System</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Real-time in-app notifications keep
+                        users informed about connection requests, new messages, job postings, and upcoming events.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── User Dashboard Section ──────────────────────────────────────────── -->
+    <section id="user-dashboard" class="py-20 md:py-24 bg-slate-900 relative border-t border-slate-800/50 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 md:mb-16 sr-hidden">
+                <h2 class="text-brand-500 font-semibold tracking-wide uppercase text-xs md:text-sm mb-2">Your Hub</h2>
+                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4">User Dashboard</h3>
+                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">Everything in one place. Manage your
+                    entire alumni experience from a single, intuitive personal dashboard.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <!-- Connections -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-950 border border-slate-800 hover:border-brand-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-brand-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-user-friends text-xl md:text-2xl text-brand-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Connections</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">View and manage all your alumni
+                        connections. Send new requests, accept incoming ones, and explore your growing professional
+                        network.</p>
+                </div>
+
+                <!-- Messages -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-comment-dots text-xl md:text-2xl text-emerald-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Messages</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Access your full inbox, reply to
+                        conversations, and stay connected with your alumni network through real-time messaging.</p>
+                </div>
+
+                <!-- Jobs -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-950 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-suitcase text-xl md:text-2xl text-blue-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Jobs</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Browse alumni-posted job listings,
+                        apply directly, or post openings from your company to give back to the community.</p>
+                </div>
+
+                <!-- Events -->
+                <div
+                    class="sr-hidden tilt-card p-6 md:p-8 rounded-2xl bg-slate-950 border border-slate-800 hover:border-pink-500/50 hover:bg-slate-800/50 transition-all group shadow-lg card-gradient-border">
+                    <div
+                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-pink-500/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-calendar-check text-xl md:text-2xl text-pink-400"></i>
+                    </div>
+                    <h4 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">Events</h4>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">Discover and register for upcoming
+                        alumni events, reunions, workshops, college fest and many more.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Architecture / Tech Stack Section ─────────────────────────────── -->
     <section id="architecture" class="py-20 md:py-24 bg-slate-900 relative px-4 border-t border-slate-800/50">
         <div class="max-w-7xl mx-auto">
-            <!-- Centered heading + description (exactly like capabilities) -->
-            <div class="text-center mb-12 md:mb-16">
-                <h2 class="text-brand-500 font-semibold tracking-wide uppercase text-xs md:text-sm mb-2 animate__animated animate__fadeInDown">The Stack</h2>
-                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4 animate__animated animate__fadeInUp">Modern Tech Architecture</h3>
-                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base animate__animated animate__fadeInUp">
-                    We chose a battle‑tested, modern stack to ensure the platform is lightning fast, fully type‑safe, and highly scalable. Deployed on Vercel and Render for optimal edge performance.
+            <div class="text-center mb-12 md:mb-16 sr-hidden">
+                <h2 class="text-brand-500 font-semibold tracking-wide uppercase text-xs md:text-sm mb-2">The Stack</h2>
+                <h3 class="text-3xl md:text-5xl font-bold text-white mb-4">Modern Tech Architecture</h3>
+                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                    We chose a battle‑tested, modern stack to ensure the platform is lightning fast, fully type‑safe,
+                    and highly scalable. Deployed on Vercel and Render for optimal edge performance.
                 </p>
             </div>
 
-            <!-- Two column layout for details (left: list, right: visual grid) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-start">
-                <!-- Left side: enhanced tech list with icons & glass cards -->
+                <!-- Left: tech list -->
                 <div class="space-y-4 md:space-y-6">
-                    <div class="flex items-start gap-4 p-5 rounded-xl bg-slate-800/30 border border-slate-800 hover:bg-slate-800/60 hover:border-brand-500/50 transition-all group">
-                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <div
+                        class="sr-hidden tilt-card flex items-start gap-4 p-5 rounded-xl bg-slate-800/30 border border-slate-800 hover:bg-slate-800/60 hover:border-brand-500/50 transition-all group">
+                        <div
+                            class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                             <i class="fab fa-react text-cyan-400 text-xl"></i>
                         </div>
                         <div>
                             <h4 class="text-white font-bold text-lg">Next.js 14 & Tailwind</h4>
-                            <p class="text-sm text-slate-500 mt-1">App Router, Server Components, and utility‑first styling.</p>
+                            <p class="text-sm text-slate-500 mt-1">App Router, Server Components, and utility‑first
+                                styling.</p>
                         </div>
                     </div>
-                    <div class="flex items-start gap-4 p-5 rounded-xl bg-slate-800/30 border border-slate-800 hover:bg-slate-800/60 hover:border-brand-500/50 transition-all group">
-                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <div
+                        class="sr-hidden tilt-card flex items-start gap-4 p-5 rounded-xl bg-slate-800/30 border border-slate-800 hover:bg-slate-800/60 hover:border-brand-500/50 transition-all group">
+                        <div
+                            class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                             <i class="fab fa-node-js text-green-500 text-xl"></i>
                         </div>
                         <div>
@@ -291,32 +992,39 @@
                             <p class="text-sm text-slate-500 mt-1">Robust REST API with custom JWT Auth middleware.</p>
                         </div>
                     </div>
-                    <div class="flex items-start gap-4 p-5 rounded-xl bg-slate-800/30 border border-slate-800 hover:bg-slate-800/60 hover:border-brand-500/50 transition-all group">
-                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <div
+                        class="sr-hidden tilt-card flex items-start gap-4 p-5 rounded-xl bg-slate-800/30 border border-slate-800 hover:bg-slate-800/60 hover:border-brand-500/50 transition-all group">
+                        <div
+                            class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                             <i class="fas fa-database text-blue-400 text-xl"></i>
                         </div>
                         <div>
                             <h4 class="text-white font-bold text-lg">Prisma ORM & Neon Postgres</h4>
-                            <p class="text-sm text-slate-500 mt-1">Strictly typed database schema hosted on serverless Postgres.</p>
+                            <p class="text-sm text-slate-500 mt-1">Strictly typed database schema hosted on serverless
+                                Postgres.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right side: visual grid with hover 3D effect -->
+                <!-- Right: visual grid -->
                 <div class="grid grid-cols-2 gap-3 md:gap-4">
-                    <div class="bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
+                    <div
+                        class="sr-hidden tilt-card bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
                         <i class="fas fa-server text-3xl md:text-4xl text-slate-400"></i>
                         <span class="font-medium text-slate-300 text-sm md:text-base">Render</span>
                     </div>
-                    <div class="bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 md:translate-y-8 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
+                    <div
+                        class="sr-hidden tilt-card bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 md:translate-y-8 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
                         <i class="fas fa-bolt text-3xl md:text-4xl text-yellow-400"></i>
                         <span class="font-medium text-slate-300 text-sm md:text-base">Vercel</span>
                     </div>
-                    <div class="bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
+                    <div
+                        class="sr-hidden tilt-card bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
                         <i class="fas fa-envelope text-3xl md:text-4xl text-brand-400"></i>
                         <span class="font-medium text-slate-300 text-sm md:text-base text-center">Brevo API</span>
                     </div>
-                    <div class="bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 md:translate-y-8 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
+                    <div
+                        class="sr-hidden tilt-card bg-slate-800 rounded-2xl p-6 md:p-8 flex flex-col items-center justify-center gap-3 border border-slate-700 md:translate-y-8 shadow-xl hover:scale-105 hover:border-brand-500 transition-all duration-300">
                         <i class="fas fa-cloud-upload-alt text-3xl md:text-4xl text-purple-400"></i>
                         <span class="font-medium text-slate-300 text-sm md:text-base">Cloudinary</span>
                     </div>
@@ -325,114 +1033,472 @@
         </div>
     </section>
 
-    <!-- Setup / Terminal Section (ultra polished) -->
+    <!-- ── Setup / Terminal Section ───────────────────────────────────────── -->
     <section id="setup" class="py-20 md:py-24 bg-slate-950 px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Developer Setup</h2>
-            <p class="text-slate-400 mb-10 text-sm md:text-base">Clone the repo and spin it up in minutes — copy the commands below.</p>
+            <div class="sr-hidden">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Developer Setup</h2>
+                <p class="text-slate-400 mb-10 text-sm md:text-base">Clone the repo and spin it up in minutes — copy the
+                    commands below.</p>
+            </div>
 
-            <!-- Mac Terminal Mockup with enhanced styling & copy feedback -->
-            <div class="text-left rounded-xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden font-mono text-xs md:text-sm">
+            <!-- Terminal Mockup -->
+            <div
+                class="sr-hidden text-left rounded-xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden font-mono text-xs md:text-sm hover:border-slate-700 transition-colors duration-300">
                 <div class="flex items-center justify-between px-4 py-3 bg-slate-950 border-b border-slate-800">
                     <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        <div class="ml-2 text-slate-500 hidden sm:block">bash — ~/xavier</div>
-                    </div>
-                </div>
-                <div class="p-4 md:p-6 text-slate-300 space-y-4 overflow-x-auto">
-                    <!-- Command 1 with copy button + tooltip -->
-                    <div class="flex justify-between items-center group">
-                        <div class="whitespace-nowrap">
-                            <span class="text-green-400">➜</span> <span class="text-brand-400">~</span> <span id="clone-cmd">git clone https://github.com/riteshthakur21/xavier-alumni-connect.git</span>
+                        <div class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors cursor-pointer">
                         </div>
-                        <button onclick="copyCmdWithFeedback('clone-cmd', this)" class="copy-tooltip text-slate-500 hover:text-white transition-colors">
-                            <i class="far fa-copy"></i>
-                            <span class="tooltip-text">Copy</span>
+                        <div
+                            class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors cursor-pointer">
+                        </div>
+                        <div
+                            class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-colors cursor-pointer">
+                        </div>
+                        <div class="ml-2 text-slate-500 hidden sm:block text-xs">bash — ~/xavier-alumni-connect</div>
+                    </div>
+                    <!-- Copy all button -->
+                    <button onclick="copyAllCmds(this)"
+                        class="copy-btn flex items-center gap-1.5 text-slate-500 hover:text-white text-xs px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-all border border-transparent hover:border-slate-700">
+                        <i class="far fa-copy"></i>
+                        <span class="copy-all-label">Copy all</span>
+                    </button>
+                </div>
+                <div class="p-4 md:p-6 text-slate-300 space-y-3 overflow-x-auto">
+                    <div class="flex justify-between items-center group gap-4">
+                        <div class="whitespace-nowrap">
+                            <span class="text-green-400">➜</span> <span class="text-brand-400">~</span> <span
+                                id="clone-cmd">git clone
+                                https://github.com/riteshthakur21/xavier-alumni-connect.git</span>
+                        </div>
+                        <button onclick="copyCmd('clone-cmd', this)"
+                            class="copy-btn shrink-0 text-slate-600 hover:text-white transition-all p-1.5 rounded hover:bg-slate-800"
+                            title="Copy command" aria-label="Copy git clone command">
+                            <i class="far fa-copy text-sm"></i>
                         </button>
                     </div>
-                    <div class="whitespace-nowrap"><span class="text-green-400">➜</span> <span class="text-brand-400">~</span> cd xavier-alumni-connect</div>
-                    <div class="text-slate-500 mt-4"># Backend server</div>
-                    <div class="whitespace-nowrap"><span class="text-green-400">➜</span> <span class="text-brand-400">backend</span> npm install && npx prisma db push</div>
-                    <div class="whitespace-nowrap"><span class="text-green-400">➜</span> <span class="text-brand-400">backend</span> npm run dev</div>
-                    <div class="text-slate-500 mt-4"># Frontend (new terminal)</div>
-                    <div class="whitespace-nowrap"><span class="text-green-400">➜</span> <span class="text-brand-400">frontend</span> npm install && npm run dev</div>
-                    <div class="text-brand-400 mt-4 animate-pulse">Server running on http://localhost:3000 ✨</div>
+                    <div class="whitespace-nowrap">
+                        <span class="text-green-400">➜</span> <span class="text-brand-400">~</span> cd
+                        xavier-alumni-connect
+                    </div>
+                    <div class="pt-2 text-slate-500"># ── Backend server</div>
+                    <div class="flex justify-between items-center group gap-4">
+                        <div class="whitespace-nowrap">
+                            <span class="text-green-400">➜</span> <span class="text-brand-400">backend</span> <span
+                                id="backend-install">npm install && npx prisma db push</span>
+                        </div>
+                        <button onclick="copyCmd('backend-install', this)"
+                            class="copy-btn shrink-0 text-slate-600 hover:text-white transition-all p-1.5 rounded hover:bg-slate-800"
+                            title="Copy command" aria-label="Copy backend install command">
+                            <i class="far fa-copy text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-center group gap-4">
+                        <div class="whitespace-nowrap">
+                            <span class="text-green-400">➜</span> <span class="text-brand-400">backend</span> <span
+                                id="backend-dev">npm run dev</span>
+                        </div>
+                        <button onclick="copyCmd('backend-dev', this)"
+                            class="copy-btn shrink-0 text-slate-600 hover:text-white transition-all p-1.5 rounded hover:bg-slate-800"
+                            title="Copy command" aria-label="Copy backend dev command">
+                            <i class="far fa-copy text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="pt-2 text-slate-500"># ── Frontend (new terminal)</div>
+                    <div class="flex justify-between items-center group gap-4">
+                        <div class="whitespace-nowrap">
+                            <span class="text-green-400">➜</span> <span class="text-brand-400">frontend</span> <span
+                                id="frontend-dev">npm install && npm run dev</span>
+                        </div>
+                        <button onclick="copyCmd('frontend-dev', this)"
+                            class="copy-btn shrink-0 text-slate-600 hover:text-white transition-all p-1.5 rounded hover:bg-slate-800"
+                            title="Copy command" aria-label="Copy frontend dev command">
+                            <i class="far fa-copy text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="pt-3 text-brand-400 term-pulse flex items-center gap-2">
+                        <i class="fas fa-circle-notch fa-spin text-xs"></i>
+                        Server running on http://localhost:3000 ✨
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-10 flex justify-center">
-                <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 transition-all gap-2 font-medium border border-slate-700 hover:border-brand-500 group">
+            <div class="mt-10 flex justify-center sr-hidden">
+                <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank"
+                    class="ripple-btn inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 transition-all gap-2 font-medium border border-slate-700 hover:border-brand-500 group">
                     <i class="fab fa-github group-hover:rotate-6 transition"></i> Read Documentation
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-slate-950 py-8 md:py-12 border-t border-slate-900 text-center md:text-left px-4">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-graduation-cap text-brand-500 text-xl md:text-2xl"></i>
-                <span class="text-lg md:text-xl font-bold text-white tracking-tight">Xavier AlumniConnect</span>
+    <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+    <footer class="bg-slate-950 border-t border-slate-800/60 px-4">
+        <!-- Main footer row -->
+        <div
+            class="max-w-7xl mx-auto py-10 md:py-14 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+
+            <!-- Left: Branding + tagline -->
+            <div class="flex flex-col items-center md:items-start gap-3">
+                <div class="flex items-center gap-2.5">
+                    <div
+                        class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                        <i class="fas fa-graduation-cap text-sm"></i>
+                    </div>
+                    <span class="text-lg font-bold text-white tracking-tight">Xavier Alumni<span
+                            class="text-brand-400">Connect</span></span>
+                </div>
+                <p class="text-slate-500 text-sm max-w-xs text-center md:text-left leading-relaxed">
+                    A next‑gen alumni platform for networking, careers, and community events.
+                </p>
             </div>
-            <p class="text-slate-500 text-sm">
-                Built with ❤️ by <a href="https://github.com/riteshthakur21" target="_blank" class="text-brand-400 hover:underline hover:text-brand-300 transition">Ritesh</a>
-            </p>
-            <div class="flex gap-6">
-                <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 hover:scale-110 transition-all">
-                    <i class="fab fa-github text-lg"></i>
-                </a>
-                <a href="https://xavier-alumni-connect.vercel.app" target="_blank" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-brand-400 hover:bg-slate-800 hover:scale-110 transition-all">
-                    <i class="fas fa-external-link-alt text-lg"></i>
-                </a>
+
+            <!-- Right: Social icons + credit -->
+            <div class="flex flex-col items-center md:items-end gap-4">
+                <div class="flex gap-3">
+                    <a href="https://github.com/riteshthakur21/xavier-alumni-connect" target="_blank"
+                        class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 hover:scale-110 hover:border-slate-600 transition-all"
+                        aria-label="GitHub">
+                        <i class="fab fa-github text-lg"></i>
+                    </a>
+                    <a href="https://xavier-alumni-connect.vercel.app" target="_blank"
+                        class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-brand-400 hover:bg-slate-800 hover:scale-110 hover:border-brand-500/50 transition-all"
+                        aria-label="Live App">
+                        <i class="fas fa-external-link-alt text-lg"></i>
+                    </a>
+                </div>
+                <p class="text-slate-500 text-sm">
+                    Built with <span class="text-red-400">&hearts;</span> by
+                    <a href="https://github.com/riteshthakur21" target="_blank"
+                        class="text-brand-400 hover:text-brand-300 hover:underline underline-offset-4 transition font-medium">
+                        Ritesh
+                    </a>
+                </p>
             </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div
+            class="max-w-7xl mx-auto py-4 border-t border-slate-800/50 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <span class="text-xs text-slate-600">© 2025 Xavier AlumniConnect. All rights reserved.</span>
+            <span class="text-xs text-slate-600 flex items-center gap-1.5">
+                <i class="fas fa-code text-slate-700"></i>
+                Next.js · Node.js · Prisma · Socket.io
+            </span>
         </div>
     </footer>
 
-    <!-- JavaScript (enhanced) -->
+    <!-- ══════════════════════════════ SCRIPTS ══════════════════════════════ -->
     <script>
-        // Mobile menu
-        const menuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = menuBtn.querySelector('i');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
+            (() => {
+                'use strict';
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            if (mobileMenu.classList.contains('hidden')) {
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
-            } else {
-                menuIcon.classList.remove('fa-bars');
-                menuIcon.classList.add('fa-times');
-            }
-        });
+                /* ── 1. Scroll progress bar ─────────────────────────────────────── */
+                function initScrollProgress() {
+                    const bar = document.getElementById('scroll-progress');
+                    function update() {
+                        const scrolled = window.scrollY;
+                        const total = document.documentElement.scrollHeight - window.innerHeight;
+                        bar.style.width = total > 0 ? `${(scrolled / total) * 100}%` : '0%';
+                    }
+                    window.addEventListener('scroll', update, { passive: true });
+                    update();
+                }
 
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
-            });
-        });
+                /* ── 2. Navbar: shrink + active section detection ───────────────── */
+                function initNavScroll() {
+                    const navbar = document.getElementById('navbar');
+                    const navInner = document.getElementById('nav-inner');
+                    const navLinks = document.querySelectorAll('.nav-link[data-section]');
+                    const sections = ['features', 'networking', 'platform', 'user-dashboard', 'architecture', 'setup'];
 
-        // Enhanced copy with temporary feedback (tooltip change)
-        function copyCmdWithFeedback(elementId, btn) {
-            const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                const tooltip = btn.querySelector('.tooltip-text');
-                const originalText = tooltip.innerText;
-                tooltip.innerText = 'Copied!';
-                setTimeout(() => {
-                    tooltip.innerText = originalText;
-                }, 2000);
-            });
-        }
+                    function onScroll() {
+                        const scrolled = window.scrollY > 40;
+                        navbar.classList.toggle('shrunk', scrolled);
+                        navInner.style.height = scrolled ? '64px' : '';
 
-        // Optional: smooth scroll for anchor links (already smooth)
-        // Add active section highlight? not needed
+                        // active section
+                        let current = '';
+                        sections.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el && window.scrollY >= el.offsetTop - 120) current = id;
+                        });
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.dataset.section === current);
+                        });
+                    }
+
+                    window.addEventListener('scroll', onScroll, { passive: true });
+                    onScroll();
+                }
+
+                /* ── 3. Mobile menu (smooth height transition) ──────────────────── */
+                function initMobileMenu() {
+                    const btn = document.getElementById('mobile-menu-btn');
+                    const menu = document.getElementById('mobile-menu');
+                    const overlay = document.getElementById('menu-overlay');
+                    const mobileLinks = menu.querySelectorAll('.mobile-link');
+                    let isOpen = false;
+
+                    function close() {
+                        isOpen = false;
+                        menu.classList.remove('open');
+                        btn.classList.remove('is-open');
+                        overlay.classList.remove('visible');
+                        overlay.setAttribute('aria-hidden', 'true');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+
+                    function open() {
+                        isOpen = true;
+                        menu.classList.add('open');
+                        btn.classList.add('is-open');
+                        overlay.classList.add('visible');
+                        overlay.setAttribute('aria-hidden', 'false');
+                        btn.setAttribute('aria-expanded', 'true');
+                    }
+
+                    btn.addEventListener('click', () => isOpen ? close() : open());
+
+                    // tap outside (overlay) closes menu
+                    overlay.addEventListener('click', close);
+
+                    // Escape key closes menu
+                    document.addEventListener('keydown', e => {
+                        if (e.key === 'Escape' && isOpen) close();
+                    });
+
+                    mobileLinks.forEach(link => {
+                        link.addEventListener('click', () => {
+                            close();
+                            // smooth scroll with slight delay for menu close animation
+                            const target = document.querySelector(link.getAttribute('href'));
+                            if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 280);
+                        });
+                    });
+                }
+
+                /* ── 4. Scroll-reveal with IntersectionObserver ─────────────────── */
+                function initScrollReveal() {
+                    const targets = document.querySelectorAll('.sr-hidden');
+                    if (!('IntersectionObserver' in window)) {
+                        targets.forEach(el => { el.classList.remove('sr-hidden'); });
+                        return;
+                    }
+
+                    // Stagger children of a grid parent
+                    targets.forEach((el, i) => {
+                        el.style.animationDelay = `${(i % 4) * 0.1}s`;
+                    });
+
+                    const io = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.remove('sr-hidden');
+                                entry.target.classList.add('sr-visible');
+                                io.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+                    targets.forEach(el => io.observe(el));
+                }
+
+                /* ── 5. Counter animation ───────────────────────────────────────── */
+                function initCounters() {
+                    const counters = document.querySelectorAll('.counter[data-target]');
+                    if (!counters.length) return;
+
+                    const easeOutQuad = t => t * (2 - t);
+
+                    function animateCounter(el) {
+                        const target = parseInt(el.dataset.target, 10);
+                        const duration = 1200;
+                        const start = performance.now();
+
+                        function frame(now) {
+                            const elapsed = now - start;
+                            const progress = Math.min(elapsed / duration, 1);
+                            el.textContent = Math.round(easeOutQuad(progress) * target);
+                            if (progress < 1) requestAnimationFrame(frame);
+                            else el.textContent = target;
+                        }
+                        requestAnimationFrame(frame);
+                    }
+
+                    const io = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                animateCounter(entry.target);
+                                io.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.5 });
+
+                    counters.forEach(c => io.observe(c));
+                }
+
+                /* ── 6. 3-D card tilt ───────────────────────────────────────────── */
+                function initCardTilt() {
+                    const cards = document.querySelectorAll('.tilt-card');
+                    const MAX = 12; // max degrees
+
+                    cards.forEach(card => {
+                        card.addEventListener('mousemove', e => {
+                            const rect = card.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+                            const rotX = ((y / rect.height) - 0.5) * -MAX;
+                            const rotY = ((x / rect.width) - 0.5) * MAX;
+                            card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+                        });
+
+                        card.addEventListener('mouseleave', () => {
+                            card.style.transform = '';
+                        });
+                    });
+                }
+
+                /* ── 7. Back-to-top button ──────────────────────────────────────── */
+                function initBackToTop() {
+                    const btn = document.getElementById('back-to-top');
+                    window.addEventListener('scroll', () => {
+                        btn.classList.toggle('visible', window.scrollY > 400);
+                    }, { passive: true });
+
+                    btn.addEventListener('click', () => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                }
+
+                /* ── 8. Ripple effect on .ripple-btn ────────────────────────────── */
+                function initRipple() {
+                    document.querySelectorAll('.ripple-btn').forEach(btn => {
+                        btn.addEventListener('click', function (e) {
+                            const r = this.getBoundingClientRect();
+                            const span = document.createElement('span');
+                            span.classList.add('ripple');
+                            span.style.left = `${e.clientX - r.left}px`;
+                            span.style.top = `${e.clientY - r.top}px`;
+                            this.appendChild(span);
+                            span.addEventListener('animationend', () => span.remove());
+                        });
+                    });
+                }
+
+                /* ── 9. Toast notification ──────────────────────────────────────── */
+                let toastTimer = null;
+                function showToast(message, icon = 'fa-check-circle', color = 'text-green-400') {
+                    const existing = document.querySelector('.toast');
+                    if (existing) existing.remove();
+                    clearTimeout(toastTimer);
+
+                    const toast = document.createElement('div');
+                    toast.className = 'toast animate-toast-in';
+                    toast.innerHTML = `<i class="fas ${icon} toast-icon ${color}"></i><span>${message}</span>`;
+                    document.body.appendChild(toast);
+
+                    toastTimer = setTimeout(() => {
+                        toast.style.animation = 'toastOut 0.3s ease-in forwards';
+                        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+                    }, 2500);
+                }
+
+                /* ── 10. Copy single command ─────────────────────────────────────── */
+                window.copyCmd = function (elementId, btn) {
+                    const text = document.getElementById(elementId)?.innerText;
+                    if (!text) return;
+
+                    const icon = btn.querySelector('i');
+                    const write = () => {
+                        icon.classList.replace('fa-copy', 'fa-check');
+                        btn.classList.add('copied');
+                        showToast('Command copied!');
+                        setTimeout(() => {
+                            icon.classList.replace('fa-check', 'fa-copy');
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    };
+
+                    if (navigator.clipboard?.writeText) {
+                        navigator.clipboard.writeText(text).then(write).catch(() => fallbackCopy(text, write));
+                    } else {
+                        fallbackCopy(text, write);
+                    }
+                };
+
+                /* ── 11. Copy all commands ───────────────────────────────────────── */
+                window.copyAllCmds = function (btn) {
+                    const ids = ['clone-cmd', 'backend-install', 'backend-dev', 'frontend-dev'];
+                    const text = ids.map(id => document.getElementById(id)?.innerText || '').filter(Boolean).join('\n');
+                    const icon = btn.querySelector('i');
+                    const label = btn.querySelector('.copy-all-label');
+
+                    const write = () => {
+                        icon.classList.replace('fa-copy', 'fa-check');
+                        btn.classList.add('copied');
+                        if (label) label.textContent = 'Copied!';
+                        showToast('All commands copied!');
+                        setTimeout(() => {
+                            icon.classList.replace('fa-check', 'fa-copy');
+                            btn.classList.remove('copied');
+                            if (label) label.textContent = 'Copy all';
+                        }, 2000);
+                    };
+
+                    if (navigator.clipboard?.writeText) {
+                        navigator.clipboard.writeText(text).then(write).catch(() => fallbackCopy(text, write));
+                    } else {
+                        fallbackCopy(text, write);
+                    }
+                };
+
+                /* ── 12. Clipboard fallback (execCommand) ────────────────────────── */
+                function fallbackCopy(text, cb) {
+                    try {
+                        const ta = document.createElement('textarea');
+                        ta.value = text;
+                        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+                        document.body.appendChild(ta);
+                        ta.focus();
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                        cb?.();
+                    } catch (_) {
+                        showToast('Copy failed — try manually', 'fa-exclamation-circle', 'text-red-400');
+                    }
+                }
+
+                /* ── 13. Hero parallax on scroll ─────────────────────────────────── */
+                function initParallax() {
+                    const hero = document.querySelector('#hero .max-w-7xl');
+                    if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+                    window.addEventListener('scroll', () => {
+                        const y = window.scrollY;
+                        if (y < window.innerHeight) {
+                            hero.style.transform = `translateY(${y * 0.18}px)`;
+                            hero.style.opacity = `${1 - y / (window.innerHeight * 0.9)}`;
+                        }
+                    }, { passive: true });
+                }
+
+                /* ── Init all ────────────────────────────────────────────────────── */
+                document.addEventListener('DOMContentLoaded', () => {
+                    initScrollProgress();
+                    initNavScroll();
+                    initMobileMenu();
+                    initScrollReveal();
+                    initCounters();
+                    initCardTilt();
+                    initBackToTop();
+                    initRipple();
+                    initParallax();
+                });
+
+            })();
     </script>
 </body>
+
 </html>
